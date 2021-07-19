@@ -1,8 +1,16 @@
 import React from "react";
 import Image from "next/image";
 import { MenuIcon, SearchIcon, ShoppingCartIcon } from "@heroicons/react/outline";
+import { signIn, signOut, useSession } from "next-auth/client";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { selectItems } from "../slices/basketSlice";
 
 function Header() {
+   const [session, loading] = useSession();
+   const router = useRouter();
+   const items = useSelector(selectItems);
+
    return (
       <header>
          {/* Top Nav */}
@@ -10,6 +18,7 @@ function Header() {
             {/* Left Side */}
             <div className="mt-2 flex items-center flex-grow sm:flex-grow-0">
                <Image
+                  onClick={() => router.push("/")}
                   src="https://links.papareact.com/f90"
                   width={150}
                   height={40}
@@ -29,17 +38,17 @@ function Header() {
 
             {/* Right Side */}
             <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-               <div className="link">
-                  <p>Hello Razvan Fratila</p>
+               <div onClick={!session ? signIn : signOut} className="link">
+                  {session ? `Hello, ${session.user.name}!` : "Hello, Sign In"}
                   <p className="font-extrabold md:text-sm">Account & Lists</p>
                </div>
                <div className="link">
                   <p>Returns</p>
                   <p className="font-extrabold md:text-sm">& Orders</p>
                </div>
-               <div className="link relative flex items-center">
+               <div onClick={() => router.push("/checkout")} className="link relative flex items-center">
                   <span className="absolute top-0 right-0 sm:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full font-bold text-black">
-                     0
+                     {items.length}
                   </span>
                   <ShoppingCartIcon className="h-10" />
                   <p className="hidden sm:inline font-extrabold md:text-sm mt-2">Basket</p>
@@ -56,7 +65,7 @@ function Header() {
             <p className="link">Prime Video</p>
             <p className="link">Amazon Business</p>
             <p className="link">Today's Deals</p>
-            <p className="link hidden lg:flex">Electronics</p>
+            <p className="link hidden lg:inline-flex">Electronics</p>
             <p className="link hidden lg:inline-flex">Food & Grocery</p>
             <p className="link hidden lg:inline-flex">Prime</p>
             <p className="link hidden lg:inline-flex">Buy Again</p>
