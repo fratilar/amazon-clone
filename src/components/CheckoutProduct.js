@@ -1,18 +1,15 @@
 import { StarIcon } from "@heroicons/react/solid";
+import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/outline";
 import Image from "next/image";
 import React from "react";
 import Currency from "react-currency-formatter";
 import { useDispatch } from "react-redux";
-import { addToBasket, removeFromBasket } from "../slices/basketSlice";
+import { incrementQuantity, decrementQuantity, removeFromBasket } from "../slices/basketSlice";
 
 function CheckoutProduct(item) {
-   const { id, title, category, description, image, price, rating, hasPrime } = item;
+   const { id, title, category, description, image, price, rating, hasPrime, quantity } = item;
 
    const dispatch = useDispatch();
-
-   const removeItemFromBasket = () => {
-      dispatch(removeFromBasket({ id }));
-   };
 
    return (
       <div className="grid grid-cols-5">
@@ -28,7 +25,7 @@ function CheckoutProduct(item) {
                   ))}
             </div>
             <p className="text-gray-700 text-xs my-2 line-clamp-3">{description}</p>
-            <Currency quantity={price} currency="EUR" />
+            <Currency quantity={price * quantity} currency="EUR" />
             {hasPrime && (
                <div className="flex items-center space-x-2">
                   <img loading="lazy" className="w-12" src="https://links.papareact.com/fdw" alt="" />
@@ -37,9 +34,14 @@ function CheckoutProduct(item) {
             )}
          </div>
 
-         <div className="flex flex-col justify-self-end space-y-2 my-auto">
-            <button className="button">Add to Basket</button>
-            <button className="button" onClick={removeItemFromBasket}>
+         <div className="flex flex-col justify-self-end space-y-2 my-auto text-gray-700">
+            <h4 className="text-center">Quantity</h4>
+            <div className="flex items-center pb-3 justify-center">
+               <MinusCircleIcon className="h-6 cursor-pointer" onClick={() => dispatch(decrementQuantity({ id }))} />
+               <p className="mx-2">{quantity}</p>
+               <PlusCircleIcon className="h-6 cursor-pointer" onClick={() => dispatch(incrementQuantity({ id }))} />
+            </div>
+            <button className="button" onClick={() => dispatch(removeFromBasket({ id }))}>
                Remove from Basket
             </button>
          </div>
