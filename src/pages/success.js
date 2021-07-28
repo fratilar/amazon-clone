@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import Header from "../components/Header";
 
-function Succes() {
+function Success() {
    const router = useRouter();
 
    return (
@@ -29,4 +29,4 @@ function Succes() {
    );
 }
 
-export default Succes;
+export default Success;
